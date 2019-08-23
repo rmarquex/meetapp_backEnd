@@ -16,6 +16,21 @@ class UserController {
       provider,
     });
   }
+
+  async update(req, res) {
+    const { email, oldPassword } = req.body;
+
+    const user = await User.findByPk(req.userId);
+
+    if (email !== user.email) {
+      const userExists = await User.findOne({ where: { email } });
+
+      if (userExists) {
+        return res.status(400).json({ error: 'User already exists.' });
+      }
+    }
+    return res.json({ ok: true });
+  }
 }
 
 export default new UserController();
